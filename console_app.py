@@ -45,6 +45,18 @@ def getIndex(title):
         return -1
     return df[df.title == title]["index"].values[0]
 
+#Returns movies based on popularity of specific genre
+def get_movies(genre):
+    movies = df[df['genres'].str.contains(genre, case=False)]
+    movies = movies.sort_values(by=['popularity'], ascending=False)
+    return movies['title']
+
+
+
+def get_movies_cast(cast):
+    movies = df[df['cast'].str.contains(cast, case=False)]
+    movies = movies.sort_values(by=['popularity'], ascending=False)
+    return movies['title']
 
 
 
@@ -72,32 +84,64 @@ print("\n==> This model asks for the movie of you liking and returns any amount 
 
 
 #User Input
-usersMovie = input("> Enter Movie Name : ")
-movieIndex = getIndex(usersMovie)
-if movieIndex == -1:
-    while movieIndex == -1:
-        print("[!] Movie Name Is Incomplete Or Movie Doesn't Exists In The Dataset, Please Try Again!\n")
-        usersMovie = input("> Enter Movie Name : ")
-        movieIndex = getIndex(usersMovie)
-movieRetCount = int(input("> Enter No. Of Movies To Be Fetched : "))
+usersCategory = input("> Enter Category (similarity/top_movies/cast): ")
 
+if usersCategory == "similarity":
+    usersMovie = input("> Enter Movie Name : ")
+    movieIndex = getIndex(usersMovie)
 
+    if movieIndex == -1:
+        while movieIndex == -1:
+            print("[!] Movie Name Is Incomplete Or Movie Doesn't Exists In The Dataset, Please Try Again!\n")
+            usersMovie = input("> Enter Movie Name : ")
+            movieIndex = getIndex(usersMovie)
+    movieRetCount = int(input("> Enter No. Of Movies To Be Fetched : "))
+    
+    
+    #Fetching Similar Movies From The Dataset and Sorting
+    similarMovies = list(enumerate(similarityElement[movieIndex]))
+    sortedSimilar = sorted(similarMovies,key=lambda x:x[1],reverse=True)[1:]
 
+    
+    #Printing The Results
+    print("\nTop "+ str(movieRetCount) +" Similar Movies Like "+ usersMovie +" Are: ")
+    i=0
+    for element in sortedSimilar:
+        i=i+1
+        print(str(i)+". "+getTitle(element[0]))
+        if i == movieRetCount :
+            break;
+    if i!=movieRetCount:
+        print("Dataset Only Has "+ str(i) +" Movies Similar Like "+ usersMovie)
 
-#Fetching Similar Movies From The Dataset and Sorting
-similarMovies = list(enumerate(similarityElement[movieIndex]))
-sortedSimilar = sorted(similarMovies,key=lambda x:x[1],reverse=True)[1:]
+    
+elif usersCategory == "top_movies":
+    usersGenre = input("> Enter Genre: ")
+    movies = get_movies(usersGenre)
 
+    if len(movies) > 0:
+        movieRetCount = int(input("> Enter No. Of Movies To Be Fetched : "))
+        movies = movies.head(movieRetCount)
 
+        print("\nTop "+ str(movieRetCount) +" Movies in "+ usersGenre +" Genre Based On Popularity Are: ")
+        for title in movies:
+            print(title)
+    else:
+        print("No movies found in the "+ genre +" genre!")
+    
 
+elif usersCategory == "cast":
+    actor = input("> Enter Actor Name: ")
+    movies = get_movies_cast(actor)
 
-#Printing The Results
-print("\nTop "+ str(movieRetCount) +" Similar Movies Like "+ usersMovie +" Are: ")
-i=0
-for element in sortedSimilar:
-    i=i+1
-    print(str(i)+". "+getTitle(element[0]))
-    if i == movieRetCount :
-        break;
-if i!=movieRetCount:
-    print("Dataset Only Has "+ str(i) +" Movies Similar Like "+ usersMovie)
+    if len(movies) > 0:
+        movieRetCount = int(input("> Enter No. Of Movies To Be Fetched : "))
+        movies = movies.head(movieRetCount)
+
+        print("\nTop "+ str(movieRetCount) +" Movies of cast "+ actor +" Based On Popularity Are: ")
+        for title in movies:
+            print(title)
+    else:
+        print("No movies found which is casted by "+ actor+"!")
+else:
+    print("[!] Invalid Category. Please Enter 'similarity','top_movies' or 'cast")
