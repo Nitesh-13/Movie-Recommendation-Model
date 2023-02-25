@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Recommender</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/liststyle.css') }}" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
@@ -20,29 +20,40 @@
     <link rel="icon" href="{{ url_for('static', filename='movies.ico') }}" type="image/x-icon" />
   </head>
   <body>
+    <h1>Top {{movie_ret_count}} Similar Movies Like {{users_movie}}</h1>
+        <h3>You're all good to go</h3>
     <div class="card">
-      <div class="swiper">
-        <div class="swiper-wrapper">
-          <form method="get">
-            <div class="swiper-slide">
-                <h2>Top {{movie_ret_count}} Similar Movies Like {{users_movie}}</h2>
-                <h3>You're all good to go</h3>
-                <div class="movielist">
-                  {% if error %}
-                  <p style="color: red">{{ error }}</p>
-                  {% endif %} {% if recommended_movies %}
-                  <ol>
-                    {% for movie in recommended_movies %}
-                    <li>{{ movie }}</li>
-                    {% endfor %}
-                  </ol>
-                  {% endif %}
-                </div>
-                <button class="last" type="submit">Back</button>
-              </div>
-          </form>
+      <form method="get">
+        {% if error %}
+        <p style="color: red">{{ error }}</p>
+        {% endif %}
+        {% if recommended_movies %}
+        {% for movie in recommended_movies %}
+        <div class="movielist">
+          <div class="movie-box">
+            <img
+              class="movie-poster"
+              src="{{ movie.poster }}"
+              alt="{{ movie.title }}"
+              title="{{ movie.title }}"
+            />
+            <div class="description">
+              <div class="movie-title">{{ movie.title }}</div>
+              <div class="movie-year liner">Year - {{ movie.release_date[-4:] }}</div>
+              <br>
+              <div class="movie-description">{{ movie.description }}</div>
+              <ul>
+                <li>Director - {{ movie.director }}</li>
+                <li>Genre - {{ movie.genre }}</li>
+                <li>Cast - {{ movie.cast }}</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
+        {% endfor %}
+        {% endif %}
+        <button class="last" type="submit">Back</button>
+      </form>
     </div>
     <p id="copyright">COPYRIGHT © 2023 Nitesh Mali</p>
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
