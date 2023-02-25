@@ -1,48 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Recommender</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" href="{{ url_for('static', filename='movies.ico') }}" type="image/x-icon" />
   </head>
   <body>
-    <h1>Movie Recommender</h1>
-    <p>
-      This model asks for the movie of you liking and returns any amount of
-      similar movies.
-    </p>
-    <form method="post">
-      <p>
-        <label for="movie_name">Enter Movie Name:</label>
-        <input type="text" name="movie_name" id="movie_name" required />
-      </p>
-      <p>
-        <label for="movie_ret_count"
-          >Enter Number of Movies to be Fetched:</label
-        >
-        <input
-          type="number"
-          name="movie_ret_count"
-          id="movie_ret_count"
-          value="5"
-          min="1"
-          max="20"
-        />
-      </p>
-      <p>
-        <input type="submit" value="Recommend Movies" />
-      </p>
-    </form>
-
-    {% if error %}
-    <p style="color: red">{{ error }}</p>
-    {% endif %} {% if recommended_movies %}
-    <h2>Top {{ movie_ret_count }} Similar Movies Like {{ movie_name }} Are:</h2>
-    <ol>
-      {% for movie in recommended_movies %}
-      <li>{{ movie }}</li>
-      {% endfor %}
-    </ol>
-    {% endif %}
+    <div class="card">
+      <form method="post">
+        <div class="swiper">
+          <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <img src="{{ url_for('static', filename='images/logo1.png') }}" />
+                <h2>Movie Recommender</h2>
+                <h3>Enter movie name</h3>
+                <input
+                  spellcheck="false"
+                  oninput="checkValid(event)"
+                  type="text"
+                  name="movie_name"
+                  placeholder="E.g. Avatar"
+                />
+                <button  type="button" onclick="gotoSlide(1)">Next</button>
+              </div>
+              <div class="swiper-slide">
+                <div className="image-wrapper">
+                  <img src="{{ url_for('static', filename='images/logo2.png') }}" />
+                </div>
+                <h2>Enter Movie Count</h2>
+                <h3>Enter any number of movies you want.</h3>
+                <input
+                  oninput="checkValid(event)"
+                  type="number"
+                  name="movie_ret_count"
+                />
+                <button  type="submit" id="submit">
+                  Next
+                </button>
+              </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <p id="copyright">COPYRIGHT © 2023 Nitesh Mali</p>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>
 </html>
