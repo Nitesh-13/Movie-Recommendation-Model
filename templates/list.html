@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Recommender</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" href="{{ url_for('static', filename='movies.ico') }}" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          <form method="get">
+            <div class="swiper-slide">
+                <h2>Top {{movie_ret_count}} Similar Movies Like {{users_movie}}</h2>
+                <h3>You're all good to go</h3>
+                <div class="movielist">
+                  {% if error %}
+                  <p style="color: red">{{ error }}</p>
+                  {% endif %} {% if recommended_movies %}
+                  <ol>
+                    {% for movie in recommended_movies %}
+                    <li>{{ movie }}</li>
+                    {% endfor %}
+                  </ol>
+                  {% endif %}
+                </div>
+                <button class="last" type="submit">Back</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <p id="copyright">COPYRIGHT © 2023 Nitesh Mali</p>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>
