@@ -68,7 +68,7 @@ similarityElement = cosine_similarity(countMatrix)
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 #Define the home page route
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     return render_template('index.html')
 
@@ -82,14 +82,13 @@ def recommend_movies():
     movie_index = getIndex(users_movie)
 
     if movie_index == -1:
-        return render_template('index.html', error='Movie not found!')
+        return render_template('list.html', error='Movie not found!')
 
     movie_ret_count = int(request.form['movie_ret_count'])
 
     # Fetching Similar Movies From The Dataset and Sorting
     similarity_scores = list(enumerate(similarityElement[movie_index]))
-    sorted_similar = sorted(
-        similarity_scores, key=lambda x: x[1], reverse=True)[1:]
+    sorted_similar = sorted(similarity_scores, key=lambda x: x[1], reverse=True)[1:]
 
     # Extract top similar movies
     recommended_movies = []
@@ -101,7 +100,7 @@ def recommend_movies():
             break
 
     # Render the results template with the recommended movies
-    return render_template('index.html', recommended_movies=recommended_movies, movie_name=users_movie,movie_ret_count=movie_ret_count)
+    return render_template('list.html', recommended_movies=recommended_movies, movie_name=users_movie,movie_ret_count=movie_ret_count)
 
 
 
