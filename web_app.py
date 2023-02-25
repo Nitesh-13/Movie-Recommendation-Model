@@ -100,7 +100,7 @@ def recommend_movies():
             break
 
     # Render the results template with the recommended movies
-    return render_template('list.html', recommended_movies=recommended_movies, movie_name=users_movie,movie_ret_count=movie_ret_count)
+    return render_template('list.html', recommended_movies=recommended_movies, users_movie=users_movie,movie_ret_count=movie_ret_count)
 
 
 
