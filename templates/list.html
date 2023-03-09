@@ -20,10 +20,10 @@
     <link rel="icon" href="{{ url_for('static', filename='movies.ico') }}" type="image/x-icon" />
   </head>
   <body>
-    <h1>Top {{movie_ret_count}} Similar Movies Like {{users_movie}}</h1>
+    <h1>Top {{movie_ret_count}} Similar Movies Like `<u>{{users_movie}}</u>`</h1>
         <h3>You're all good to go</h3>
     <div class="card">
-      <form method="get">
+      <form action="/">
         {% if error %}
         <p style="color: red">{{ error }}</p>
         {% endif %}
