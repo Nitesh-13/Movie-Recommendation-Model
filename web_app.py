@@ -4,7 +4,6 @@
 ##Topic - Movie Recommendation Model using scikit learn python module
 
 Team Members - 
-    - Ajay
     - Vivek
     - Prajakta
     - Shivani
@@ -25,6 +24,8 @@ import requests
 from flask import Flask, request, render_template
 
 
+
+
 # Reading The Dataset
 df = pd.read_csv("movie_dataset.csv")
 features = ['keywords', 'cast', 'genres', 'director']
@@ -36,35 +37,59 @@ features = ['keywords', 'cast', 'genres', 'director']
 def combFeatures(row):
     return row['keywords']+" "+row['cast']+" "+row['genres']+" "+row['director']
 
+
 #Returns title from the index of the movie
 def getTitle(index):
     return df[df.index == index]["title"].values[0]
+
 
 #Returns cast from the index of the movie
 def getCast(index):
     return df[df.index == index]["cast"].values[0]
 
+
 #Returns genre from the index of the movie
 def getGenre(index):
     return df[df.index == index]["genres"].values[0]
+
 
 #Returns genre from the index of the movie
 def getDirector(index):
     return df[df.index == index]["director"].values[0]
 
+
 #Returns genre from the index of the movie
 def getDate(index):
     return df[df.index == index]["release_date"].values[0]
+
 
 #Returns genre from the index of the movie
 def getTagline(index):
     return df[df.index == index]["tagline"].values[0]
 
+
 #Returns index from the title of the movie and if not found returns -1
 def getIndex(title):
-    if(str((df[df.title == title])).startswith("Empty")):
+    lowercase_title = title.lower()
+    lowercase_df = df["title"].str.lower()
+    if not lowercase_df.str.contains(lowercase_title).any():
         return -1
-    return df[df.title == title]["index"].values[0]
+    return df[lowercase_df == lowercase_title]["index"].values[0]
+
+#Returns Movies based on genre sorted according to popularity
+def get_movies(genre):
+    movies = df[df['genres'].str.contains(genre, case=False)]
+    movies = movies.sort_values(by=['popularity'], ascending=False)
+    return movies['index']
+
+# Returns Movies based on cast sorted according to popularity
+def get_movies_cast(cast):
+    movies = df[df['cast'].str.contains(cast, case=False)]
+    movies = movies.sort_values(by=['popularity'], ascending=False)
+    return movies['index']
+
+
+
 
 #Returns movie poster url from the title of the movie and not found returns placeholder
 def getPostInfo(index):
@@ -93,6 +118,7 @@ def getPostInfo(index):
 
 
 
+
 #Removing Null/Empty Values from the data set and creating single feature column
 for feature in features:
     df[feature] = df[feature].fillna('')
@@ -112,6 +138,7 @@ similarityElement = cosine_similarity(countMatrix)
 #Initializing Flask Application
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
+
 #Define the home page route
 @app.route('/', methods=['GET'])
 def home():
@@ -121,43 +148,56 @@ def home():
 
 
 #Define the movie recommendation route
-@app.route('/', methods=['POST'])
+@app.route('/movie', methods=['GET'])
 def recommend_movies():
-    users_movie = request.form['movie_name']
-    movie_index = getIndex(users_movie)
+    category = request.args.get('category')
+    category_value = request.args.get('category_value')
+    movie_ret_count = 10
+    singlePara = False
 
-    if movie_index == -1:
-        return render_template('list.html', error='Movie not found!')
 
-    movie_ret_count = int(request.form['movie_ret_count'])
+    if(category == "Genre Based Movies"):
+        fetched_movies = get_movies(category_value)
+        singlePara = True
+    elif(category == "Actor Based Movies"):
+        fetched_movies = get_movies_cast(category_value)
+        singlePara = True
+    elif(category == "Similar Movies"):
+        movie_index = getIndex(category_value)
 
-    # Fetching Similar Movies From The Dataset and Sorting
-    similarity_scores = list(enumerate(similarityElement[movie_index]))
-    sorted_similar = sorted(similarity_scores, key=lambda x: x[1], reverse=True)[1:]
+        if movie_index == -1:
+            return render_template('list.html', error='Movie not found!') #404 Page
+
+        # Fetching Similar Movies From The Dataset and Sorting
+        similarity_scores = list(enumerate(similarityElement[movie_index]))
+        fetched_movies = sorted(similarity_scores, key=lambda x: x[1], reverse=True)[1:]
+
+
 
     # Extract top similar movies
     recommended_movies = []
-    i = 0
-    for element in sorted_similar:
-        movieObj = {}
-        postandInfo = getPostInfo(element[0])
-        movieObj["title"] = getTitle(element[0])
-        movieObj["cast"] = getCast(element[0])
-        movieObj["genre"] = getGenre(element[0])
-        movieObj["director"] = getDirector(element[0])
-        movieObj["release_date"] = getDate(element[0])
-        movieObj["poster"] = postandInfo.get('poster_url')
-        movieObj["description"] = postandInfo.get('overview')
+
+    for element in fetched_movies:
+        postandInfo = getPostInfo(element if singlePara else element[0])
+        movieObj = {
+            "title": getTitle(element if singlePara else element[0]),
+            "cast": getCast(element if singlePara else element[0]),
+            "genre": getGenre(element if singlePara else element[0]),
+            "director": getDirector(element if singlePara else element[0]),
+            "release_date": getDate(element if singlePara else element[0]),
+            "poster": postandInfo.get('poster_url'),
+            "description": postandInfo.get('overview'),
+        }
         recommended_movies.append(movieObj)
-        i += 1
-        if i == movie_ret_count:
+        if len(recommended_movies) == movie_ret_count:
             break
 
+
     # Render the results template with the recommended movies
-    return render_template('list.html', recommended_movies=recommended_movies, users_movie=users_movie,movie_ret_count=movie_ret_count)
+    return render_template('list.html', recommended_movies=recommended_movies, users_movie=category_value.title(),movie_ret_count=movie_ret_count)
 
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
