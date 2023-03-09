@@ -16,37 +16,47 @@
       href="https://fonts.googleapis.com/css2?family=Raleway:wght@800&display=swap"
       rel="stylesheet"
     />
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="icon" href="{{ url_for('static', filename='movies.ico') }}" type="image/x-icon" />
   </head>
   <body>
     <div class="card">
-      <form method="post">
+      <form action="/movie" method="get">
         <div class="swiper">
           <div class="swiper-wrapper">
               <div class="swiper-slide">
                 <img src="{{ url_for('static', filename='images/logo1.png') }}" />
                 <h2>Movie Recommender</h2>
-                <h3>Enter movie name</h3>
-                <input
-                  spellcheck="false"
-                  oninput="checkValid(event)"
-                  type="text"
-                  name="movie_name"
-                  placeholder="E.g. Avatar"
-                />
+                <h3>Select the category for he movies</h3>
+                <label class="dropdown">
+
+                  <div class="dd-button">
+                    Select Category
+                  </div>
+                
+                  <input type="checkbox" class="dd-input" id="test">
+                
+                  <ul class="dd-menu">
+                    <li>Genre Based Movies</li>
+                    <li>Actor Based Movies</li>
+                    <li>Similar Movies</li>
+                  </ul>
+                  <input type="hidden" id="category" name="category" value="none">
+                  
+                </label>
                 <button  type="button" onclick="gotoSlide(1)">Next</button>
               </div>
               <div class="swiper-slide">
                 <div className="image-wrapper">
                   <img src="{{ url_for('static', filename='images/logo2.png') }}" />
                 </div>
-                <h2>Enter Movie Count</h2>
-                <h3>Enter any number of movies you want.</h3>
+                <h2>Enter Movie Description</h2>
+                <h3 id="putCategory"></h3>
                 <input
                   oninput="checkValid(event)"
-                  type="number"
-                  name="movie_ret_count"
+                  type="text"
+                  name="category_value"
+                  id="no"
                 />
                 <button  type="submit" id="submit">
                   Next
