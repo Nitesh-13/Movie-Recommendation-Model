@@ -166,7 +166,7 @@ def recommend_movies():
         movie_index = getIndex(category_value)
 
         if movie_index == -1:
-            return render_template('list.html', error='Movie not found!') #404 Page
+            return render_template('404.html') #404 Page
 
         # Fetching Similar Movies From The Dataset and Sorting
         similarity_scores = list(enumerate(similarityElement[movie_index]))
