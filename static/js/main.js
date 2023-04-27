@@ -21,6 +21,7 @@ const checkValid = (event) => {
 const ddMenu = document.querySelector('.dd-menu');
 const ddButton = document.querySelector('.dd-button');
 const hiddenInput = document.querySelector('#category');
+const submit = document.querySelector('#submit');
 
 // add event listener to dropdown menu
 ddMenu.addEventListener('click', function(event) {
@@ -33,3 +34,7 @@ ddMenu.addEventListener('click', function(event) {
   // update the text of the dd-button div
   ddButton.textContent = selectedItem.textContent;
 });
+
+submit.addEventListener('click',function(event){
+    submit.innerHTML = "<i class=\"fa fa-circle-o-notch fa-spin\"></i> Loading";
+})
