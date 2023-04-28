@@ -127,7 +127,7 @@ elif usersCategory == "top_movies":
         for title in movies:
             print(title)
     else:
-        print("No movies found in the "+ genre +" genre!")
+        print("No movies found in the "+ usersGenre +" genre!")
     
 
 elif usersCategory == "cast":
