@@ -6,7 +6,6 @@ const swiper = new Swiper(".swiper", {
 const gotoSlide = (index) => {
 
     const input = document.getElementById("category");
-    console.log(input)
     const heading = document.getElementById("putCategory");
     heading.textContent = "Enter "+ input.value.split(" ").shift() + " name you want.";
     console.log(heading.textContent)
@@ -36,5 +35,5 @@ ddMenu.addEventListener('click', function(event) {
 });
 
 submit.addEventListener('click',function(event){
-    submit.innerHTML = "<i class=\"fa fa-circle-o-notch fa-spin\"></i> Loading";
+  submit.innerHTML = "<i class=\"fa fa-circle-o-notch fa-spin\"></i> Loading";
 })

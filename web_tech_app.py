@@ -55,6 +55,8 @@ def recommend_movies():
             "release_date": movie.getDate(element if singlePara else element[0]),
             "poster": postandInfo.get('poster_url'),
             "description": postandInfo.get('overview'),
+            "trailer": postandInfo.get('trailer'),
+            "id": postandInfo.get('id')
         }
         recommended_movies.append(movieObj)
         if len(recommended_movies) == movie_ret_count:
